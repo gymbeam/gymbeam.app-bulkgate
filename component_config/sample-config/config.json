@@ -19,15 +19,14 @@
     }
   },
   "parameters": {
-    "#api_token": "demo",
-    "period_from": "yesterday",
-    "endpoints": [
-      "deals",
-      "companies"
-    ],
-    "company_properties": "",
-    "deal_properties": "",
-    "debug": true
+    "credentials": {
+      "#application_id": "127.0.0.1",
+      "#application_token": 8080
+    },
+    "settings": {
+      "sender_ids": "127.0.0.1",
+      "message_type": 8080
+    }
   },
   "image_parameters": {
     "syrup_url": "https://syrup.keboola.com/"

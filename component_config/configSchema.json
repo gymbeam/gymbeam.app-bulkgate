@@ -1,17 +1,70 @@
 {
   "type": "object",
-  "title": "extractor configuration",
+  "title": "Credentials and settings",
   "required": [
-    "print_hello"
+    "credentials",
+    "settings"
   ],
   "properties": {
-    "print_hello": {
-      "type": "boolean",
-      "title": "Print Hello"
+    "settings": {
+      "type": "object",
+      "title": "Settings",
+      "required": [
+        "message_type",
+        "sender_id",
+        "viber"
+      ],
+      "properties": {
+        "message_type": {
+          "enum": [
+            "Transactional",
+            "Promotional"
+          ],
+          "type": "string",
+          "title": "Message type",
+          "propertyOrder": 1
+        },
+        "sender_id": {
+          "type": "string",
+          "title": "Sender ID",
+          "propertyOrder": 2
+        },
+        "viber": {
+          "type": "boolean",
+          "title": "Send to Viber?",
+          "propertyOrder": 3
+        },
+        "viber_sender": {
+          "type": "string",
+          "title": "Viber sender",
+          "propertyOrder": 4
+        }
+      },
+      "propertyOrder": 2
     },
-    "debug": {
-      "type": "boolean",
-      "title": "Debug"
+    "credentials": {
+      "type": "object",
+      "title": "Credentials",
+      "required": [
+        "#application_id",
+        "#application_token"
+      ],
+      "properties": {
+        "#application_id": {
+          "type": "string",
+          "title": "Application id",
+          "format": "password",
+          "propertyOrder": 1
+        },
+        "#application_token": {
+          "type": "string",
+          "title": "Application token",
+          "format": "password",
+          "propertyOrder": 2
+        }
+      },
+      "propertyOrder": 1
     }
-  }
+  },
+  "description": "Set-up credentials and market settings."
 }
