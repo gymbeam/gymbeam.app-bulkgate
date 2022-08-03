@@ -52,7 +52,7 @@
       "properties": {
         "#application_id": {
           "type": "string",
-          "title": "Application id",
+          "title": "Application ID",
           "format": "password",
           "propertyOrder": 1
         },
