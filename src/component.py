@@ -24,7 +24,7 @@ KEY_SETTINGS_MESSAGE_TYPE = 'message_type'
 KEY_SETTINGS_VIBER = 'viber'
 KEY_SETTINGS_VIBER_SENDER = 'viber_sender'
 
-PROMOTIONAL_URL =  "https://portal.bulkgate.com/api/2.0/advanced/promotional"
+PROMOTIONAL_URL = "https://portal.bulkgate.com/api/2.0/advanced/promotional"
 TRANSACTIONAL_URL = "https://portal.bulkgate.com/api/2.0/advanced/transactional"
 
 # list of mandatory parameters => if some is missing,
