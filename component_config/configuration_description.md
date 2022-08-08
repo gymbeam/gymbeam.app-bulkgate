@@ -1,9 +1,4 @@
-# Bulkgate
-
-This application is used for sending SMS and Viber messages using [bulkgate api](https://www.bulkgate.com/en/).
-
-
-# Input
+## Input
 
 Input should be a table with 3 columns:
 
@@ -25,6 +20,6 @@ Can be created as per [here](https://help.bulkgate.com/docs/en/api-administratio
 Additional settings for message sending:
 
  - `Message type` - can be either `Transactional` or `Promotional` depending on the purpose of the message. Be aware that as per [documentation](https://help.bulkgate.com/docs/en/difference-promotional-transactional-sms.html#transactional-sms) **it is *strictly prohibited* to exploit transactional SMS( for promotional/marketing uses. It must be used for notification purposes only - as an SMS notification.** 
- - `Sender ID` - [sender id profile](https://help.bulkgate.com/docs/en/sender-id-profile.html)
+ - `Sender ID` - [sender ID profile](https://help.bulkgate.com/docs/en/sender-id-profile.html)
  - `Send to Viber?` - if `true` message will be send to `viber` first and fallback to `SMS` if there provided phone number does not have `viber` account. If `false` message will be send via `SMS`.
  - `Viber sender` - sender name which will be shown in `viber` as the sender of a message (this field is mandatory if `Send to Viber?` is `true`
