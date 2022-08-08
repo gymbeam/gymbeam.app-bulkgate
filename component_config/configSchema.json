@@ -9,6 +9,7 @@
     "settings": {
       "type": "object",
       "title": "Settings",
+      "description": "Additional settings for message sending",
       "required": [
         "message_type",
         "sender_id",
@@ -22,21 +23,25 @@
           ],
           "type": "string",
           "title": "Message type",
+          "description": "Can be either `Transactional` or `Promotional` depending on the purpose of the message. Be aware that as per [documentation](https://help.bulkgate.com/docs/en/difference-promotional-transactional-sms.html#transactional-sms) **it is *strictly prohibited* to exploit transactional SMS for promotional/marketing uses. It must be used for notification purposes only - as an SMS notification.**",
           "propertyOrder": 1
         },
         "sender_id": {
           "type": "string",
           "title": "Sender ID",
+          "description": "[sender ID profile](https://help.bulkgate.com/docs/en/sender-id-profile.html)",
           "propertyOrder": 2
         },
         "viber": {
           "type": "boolean",
           "title": "Send to Viber?",
+          "description": "If `true` message will be send to `viber` primarly and fallback to `SMS` if the provided phone number does not have `viber` account. If `false` message will be send only via `SMS`",
           "propertyOrder": 3
         },
         "viber_sender": {
           "type": "string",
           "title": "Viber sender",
+          "description": "Sender name which will be shown in `viber` as the sender of a message (this field is mandatory if `Send to Viber?` is `true`",
           "propertyOrder": 4
         }
       },
@@ -45,6 +50,7 @@
     "credentials": {
       "type": "object",
       "title": "Credentials",
+      "description": "Can be created as per [here](https://help.bulkgate.com/docs/en/api-administration.html).",
       "required": [
         "#application_id",
         "#application_token"
@@ -65,6 +71,5 @@
       },
       "propertyOrder": 1
     }
-  },
-  "description": "Set-up credentials and market settings."
+  }
 }

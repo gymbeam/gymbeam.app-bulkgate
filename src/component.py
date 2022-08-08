@@ -24,6 +24,9 @@ KEY_SETTINGS_MESSAGE_TYPE = 'message_type'
 KEY_SETTINGS_VIBER = 'viber'
 KEY_SETTINGS_VIBER_SENDER = 'viber_sender'
 
+PROMOTIONAL_URL =  "https://portal.bulkgate.com/api/2.0/advanced/promotional"
+TRANSACTIONAL_URL = "https://portal.bulkgate.com/api/2.0/advanced/transactional"
+
 # list of mandatory parameters => if some is missing,
 # component will fail with readable message on initialization.
 REQUIRED_PARAMETERS = []
@@ -66,12 +69,12 @@ class Component(ComponentBase):
         _credentials_object = self._parse_credentials_parameters()
         _settings_object = self._parse_settings_parameters()
 
+        _data_in = self._parse_table()
+
         _url = self._get_url(_settings_object)
         _body = self._get_body(_credentials_object, _settings_object)
 
-        _data_in = self._parse_table()
-
-        self.send_messages(_url, _body, _data_in)
+        self._send_messages(_url, _body, _data_in)
 
     def _parse_credentials_parameters(self):
         credentials = self.configuration.parameters.get(KEY_CREDENTIALS, {})
@@ -100,32 +103,19 @@ class Component(ComponentBase):
                 settings[KEY_SETTINGS_VIBER],
                 settings[KEY_SETTINGS_VIBER_SENDER]
                 )
+
             if settings_obj.viber and settings_obj.viber_sender == '':
                 logging.exception(
                     f"Missing mandatory field {KEY_SETTINGS_VIBER_SENDER} in settings. "
                     f"Please specify {KEY_SETTINGS_VIBER_SENDER} for Viber."
                     )
                 sys.exit(1)
+
         except KeyError as e:
             logging.exception(f"Missing mandatory field {e} in settings.")
             sys.exit(1)
+
         return settings_obj
-
-    def _get_url(self, settings):
-        if settings.message_type == 'Promotional':
-            return "https://portal.bulkgate.com/api/2.0/advanced/promotional"
-        return "https://portal.bulkgate.com/api/2.0/advanced/transactional"
-
-    def _get_body(self, credentials, settings):
-        channels = {}
-        if settings.viber:
-            channels['viber'] = {"sender": settings.viber_sender}
-        channels['sms'] = {"sender_id": "gProfile", "sender_id_value": settings.sender_id}
-        return {"application_id": credentials.application_id,
-                "application_token": credentials.application_token,
-                "number": [],
-                "channel": channels
-                }
 
     def _parse_table(self):
         in_tables = self.configuration.tables_input_mapping
@@ -141,9 +131,37 @@ class Component(ComponentBase):
         table = in_tables[0]
 
         logging.info(f'Processing input table: {table["destination"]}')
-        return pd.read_csv(f'{self.tables_in_path}/{table["destination"]}', dtype=str)
+        df = pd.read_csv(f'{self.tables_in_path}/{table["destination"]}', dtype=str)
 
-    def send_messages(self, url, body, data):
+        if df.empty:
+            logging.exception(f'Input table {table["destination"]} is empty!')
+            exit(1)
+
+        return df
+
+    def _get_url(self, settings):
+        if settings.message_type == 'Promotional':
+            return PROMOTIONAL_URL
+        return TRANSACTIONAL_URL
+
+    def _get_body(self, credentials, settings):
+        channels = {}
+        if settings.viber:
+            channels['viber'] = {"sender": settings.viber_sender}
+        channels['sms'] = {"sender_id": "gProfile", "sender_id_value": settings.sender_id}
+
+        admins = []
+        if len(settings.admins) > 0:
+            admins = settings.admins
+
+        return {"application_id": credentials.application_id,
+                "application_token": credentials.application_token,
+                "number": [],
+                "channel": channels,
+                "admins": admins
+                }
+
+    def _send_messages(self, url, body, data):
         """
         Send messages to the specified recipients
         """
