@@ -235,7 +235,7 @@ class Component(ComponentBase):
         current_time = datetime.now().isoformat()
 
         # Create table definition
-        stats_talbe = self.create_out_table_definition('stats.csv', incremental=True, primary_key=['timestamp'])
+        stats_table = self.create_out_table_definition('stats.csv', incremental=True, primary_key=['timestamp'])
         messages_table = self.create_out_table_definition('messages.csv', incremental=True, primary_key=['message_id'])
         messages_parts_table = self.create_out_table_definition(
             'messages_parts.csv', incremental=True, primary_key=['part_id'])
@@ -245,10 +245,7 @@ class Component(ComponentBase):
         stats['timestamp'] = current_time
 
         # Load stats data
-        stats_file_path = stats_talbe.full_path
-        logging.info(stats_file_path)
-
-        with open(stats_file_path, 'wt', encoding='UTF-8', newline='') as stats_file:
+        with open(stats_table.full_path, 'wt', encoding='UTF-8', newline='') as stats_file:
             fields = [
                 'timestamp', 'sent', 'accepted', 'scheduled',
                 'error', 'blacklisted', 'invalid_number', 'invalid_sender'
@@ -257,26 +254,19 @@ class Component(ComponentBase):
             writer.writeheader()
             writer.writerow(stats)
 
-        # Load messages data
-        messages_file_path = messages_table.full_path
-        messages_parts_file_path = messages_parts_table.full_path
-
-        logging.info(messages_file_path)
-        logging.info(messages_parts_file_path)
-
         # Open messages file, set headers, writer and write headers
-        messages_file = open(messages_file_path, 'wt', encoding='UTF-8', newline='')
+        messages_file = open(messages_table.full_path, 'wt', encoding='UTF-8', newline='')
         messages_fields = ['message_id', 'status', 'number', 'channel', 'timestamp']
         messages_writer = csv.DictWriter(messages_file, fieldnames=messages_fields)
         messages_writer.writeheader()
 
         # Set messages parts file, set headers, writer and write headers
-        messages_parts_file = open(messages_parts_file_path, 'wt', encoding='UTF-8', newline='')
+        messages_parts_file = open(messages_parts_table.full_path, 'wt', encoding='UTF-8', newline='')
         messages_parts_fields = ['part_id', 'message_id']
         messages_parts_writer = csv.DictWriter(messages_parts_file, fieldnames=messages_parts_fields)
         messages_parts_writer.writeheader()
 
-        # Parse messages data
+        # Parse messages data and load
         for message in response['data']['response']:
             message['timestamp'] = current_time
 
@@ -296,9 +286,7 @@ class Component(ComponentBase):
         messages_parts_file.close()
 
         # Save tables
-        self.write_manifest(stats_talbe)
-        self.write_manifest(messages_table)
-        self.write_manifest(messages_parts_table)
+        self.write_manifests([stats_table, messages_table, messages_parts_table])
 
 
 """
