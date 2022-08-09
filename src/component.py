@@ -250,7 +250,7 @@ class Component(ComponentBase):
 
         with open(stats_file_path, 'wt', encoding='UTF-8', newline='') as stats_file:
             fields = ['timestamp', 'sent', 'accepted', 'scheduled',
-                    'error', 'blacklisted', 'invalid_number', 'invalid_sender']
+                        'error', 'blacklisted', 'invalid_number', 'invalid_sender']
             writer = csv.DictWriter(stats_file, fieldnames=fields)
             writer.writeheader()
             writer.writerow(stats)
