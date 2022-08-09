@@ -22,21 +22,25 @@
           ],
           "type": "string",
           "title": "Message type",
+          "description": "Type of message to send.",
           "propertyOrder": 1
         },
         "sender_id": {
           "type": "string",
           "title": "Sender ID",
+          "description": "Sender ID to use for the message.",
           "propertyOrder": 2
         },
         "viber": {
           "type": "boolean",
           "title": "Send to Viber?",
+          "description": "Determines if message is primary sent to Viber or not.",
           "propertyOrder": 3
         },
         "viber_sender": {
-          "type": "string",
+          "type": "integer",
           "title": "Viber sender",
+          "description": "Viber sender name which will be shown as a sender.",
           "propertyOrder": 4
         }
       },
@@ -53,12 +57,14 @@
         "#application_id": {
           "type": "string",
           "title": "Application ID",
+          "description": "Your BulkGate application ID.",
           "format": "password",
           "propertyOrder": 1
         },
         "#application_token": {
           "type": "string",
           "title": "Application token",
+          "description": "Your BulkGate application token.",
           "format": "password",
           "propertyOrder": 2
         }

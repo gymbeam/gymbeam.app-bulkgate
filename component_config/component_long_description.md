@@ -5,7 +5,7 @@ This application is used for sending SMS and Viber messages using [bulkgate api]
 
 ## Input
 
-Input should be a table with 3 columns:
+Input must be a table with 3 columns:
 
  - `number` - phone number to which message will be send - must include country code (ex: 420123123123)
  - `text` - text which will be send
@@ -28,3 +28,10 @@ Additional settings for message sending:
  - `Sender ID` - [sender ID profile](https://help.bulkgate.com/docs/en/sender-id-profile.html)
  - `Send to Viber?` - if `true` message will be send to `viber` primarly and fallback to `SMS` if the provided phone number does not have `viber` account. If `false` message will be send only via `SMS`
  - `Viber sender` - sender name which will be shown in `viber` as the sender of a message (this field is mandatory if `Send to Viber?` is `true`
+
+## Output
+
+As an output, 3 tables are returned.
+ - `stats` - contains information about the sent messages in total
+ - `messages` - contains information about each sent message
+ - `messages_parts` - contains information about message parts for each message
