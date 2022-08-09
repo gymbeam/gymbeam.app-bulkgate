@@ -171,7 +171,7 @@ class Component(ComponentBase):
         return df
 
     def _get_url(self, settings: Settings) -> str:
-        """ 
+        """
         Returns the url for the request.
         """
         if settings.message_type == 'Promotional':
@@ -237,7 +237,8 @@ class Component(ComponentBase):
         # Create table definition
         stats_talbe = self.create_out_table_definition('stats.csv', incremental=True, primary_key=['timestamp'])
         messages_table = self.create_out_table_definition('messages.csv', incremental=True, primary_key=['message_id'])
-        messages_parts_table = self.create_out_table_definition('messages_parts.csv', incremental=True, primary_key=['part_id'])
+        messages_parts_table = self.create_out_table_definition(
+            'messages_parts.csv', incremental=True, primary_key=['part_id'])
 
         # Parse stats data
         stats = response['data']['total']['status']
@@ -248,7 +249,8 @@ class Component(ComponentBase):
         logging.info(stats_file_path)
 
         with open(stats_file_path, 'wt', encoding='UTF-8', newline='') as stats_file:
-            fields = ['timestamp', 'sent', 'accepted', 'scheduled', 'error', 'blacklisted', 'invalid_number', 'invalid_sender']
+            fields = ['timestamp', 'sent', 'accepted', 'scheduled', 'error',
+                'blacklisted', 'invalid_number', 'invalid_sender']
             writer = csv.DictWriter(stats_file, fieldnames=fields)
             writer.writeheader()
             writer.writerow(stats)
@@ -286,7 +288,7 @@ class Component(ComponentBase):
             # Load messages data
             message.pop('part_id', None)
             messages_writer.writerow(message)
-        
+
         # Close files
         messages_file.close()
         messages_parts_file.close()
