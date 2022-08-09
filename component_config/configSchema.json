@@ -26,7 +26,7 @@
           "propertyOrder": 1
         },
         "sender_id": {
-          "type": "string",
+          "type": "integer",
           "title": "Sender ID",
           "description": "Sender ID to use for the message.",
           "propertyOrder": 2
@@ -38,7 +38,7 @@
           "propertyOrder": 3
         },
         "viber_sender": {
-          "type": "integer",
+          "type": "string",
           "title": "Viber sender",
           "description": "Viber sender name which will be shown as a sender.",
           "propertyOrder": 4
