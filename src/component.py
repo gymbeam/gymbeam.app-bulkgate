@@ -83,6 +83,9 @@ class Component(ComponentBase):
         # Send messages
         self._send_messages(_url, _body, _data_in)
 
+        # Close files and manifes data
+        self._close_and_manifest_files()
+
     def _parse_credentials_parameters(self):
         """
         Parses credentials parameters from the configuration.
@@ -205,6 +208,7 @@ class Component(ComponentBase):
         """
         # Get unique timestamps
         timestamps = data.timestamp.unique()
+        runs = 0
 
         for time in timestamps:
             # Get the recipients and messages for the current timestamp
@@ -226,7 +230,42 @@ class Component(ComponentBase):
                 sys.exit(1)
 
             # Save response
+            if runs == 0:
+                runs += 1
+                self._create_tables_definitions()
             self._save_response(response.json())
+
+    def _create_tables_definitions(self):
+        """
+        Creates the tables definitions for output tables.
+        """
+
+        # Create tables definitions
+        self._stats_table = self.create_out_table_definition('stats.csv', incremental=True, primary_key=['timestamp'])
+        self._messages_table = self.create_out_table_definition('messages.csv', incremental=True, primary_key=['message_id'])
+        self._messages_parts_table = self.create_out_table_definition(
+            'messages_parts.csv', incremental=True, primary_key=['part_id'])
+
+        # Open stats file, set headers, writer and write headers
+        self._stats_file = open(self._stats_table.full_path, 'wt', encoding='UTF-8', newline='')
+        stats_fields = [
+                'timestamp', 'sent', 'accepted', 'scheduled',
+                'error', 'blacklisted', 'invalid_number', 'invalid_sender'
+                ]
+        self._stats_writer = csv.DictWriter(self._stats_file, fieldnames=stats_fields)
+        self._stats_writer.writeheader()
+
+        # Open messages file, set headers, writer and write headers
+        self._messages_file = open(self._messages_table.full_path, 'wt', encoding='UTF-8', newline='')
+        messages_fields = ['message_id', 'status', 'number', 'channel', 'timestamp']
+        self._messages_writer = csv.DictWriter(self._messages_file, fieldnames=messages_fields)
+        self._messages_writer.writeheader()
+
+        # Open messages parts file, set headers, writer and write headers
+        self._messages_parts_file = open(self._messages_parts_table.full_path, 'wt', encoding='UTF-8', newline='')
+        messages_parts_fields = ['part_id', 'message_id']
+        self._messages_parts_writer = csv.DictWriter(self._messages_parts_file, fieldnames=messages_parts_fields)
+        self._messages_parts_writer.writeheader()
 
     def _save_response(self, response: dict) -> None:
         """
@@ -234,37 +273,12 @@ class Component(ComponentBase):
         """
         current_time = datetime.now().isoformat()
 
-        # Create table definition
-        stats_table = self.create_out_table_definition('stats.csv', incremental=True, primary_key=['timestamp'])
-        messages_table = self.create_out_table_definition('messages.csv', incremental=True, primary_key=['message_id'])
-        messages_parts_table = self.create_out_table_definition(
-            'messages_parts.csv', incremental=True, primary_key=['part_id'])
-
         # Parse stats data
         stats = response['data']['total']['status']
         stats['timestamp'] = current_time
 
         # Load stats data
-        with open(stats_table.full_path, 'wt', encoding='UTF-8', newline='') as stats_file:
-            fields = [
-                'timestamp', 'sent', 'accepted', 'scheduled',
-                'error', 'blacklisted', 'invalid_number', 'invalid_sender'
-                ]
-            writer = csv.DictWriter(stats_file, fieldnames=fields)
-            writer.writeheader()
-            writer.writerow(stats)
-
-        # Open messages file, set headers, writer and write headers
-        messages_file = open(messages_table.full_path, 'wt', encoding='UTF-8', newline='')
-        messages_fields = ['message_id', 'status', 'number', 'channel', 'timestamp']
-        messages_writer = csv.DictWriter(messages_file, fieldnames=messages_fields)
-        messages_writer.writeheader()
-
-        # Set messages parts file, set headers, writer and write headers
-        messages_parts_file = open(messages_parts_table.full_path, 'wt', encoding='UTF-8', newline='')
-        messages_parts_fields = ['part_id', 'message_id']
-        messages_parts_writer = csv.DictWriter(messages_parts_file, fieldnames=messages_parts_fields)
-        messages_parts_writer.writeheader()
+        self._stats_writer.writerow(stats)
 
         # Parse messages data and load
         for message in response['data']['response']:
@@ -272,21 +286,26 @@ class Component(ComponentBase):
 
             # Load messages parts data
             for part in message['part_id']:
-                messages_parts_writer.writerow({
+                self._messages_parts_writer.writerow({
                     'part_id': part,
                     'message_id': message['message_id']
                 })
 
             # Load messages data
             message.pop('part_id', None)
-            messages_writer.writerow(message)
+            self._messages_writer.writerow(message)
 
+    def _close_and_manifest_files(self):
+        """
+        Close and manifest files
+        """
         # Close files
-        messages_file.close()
-        messages_parts_file.close()
+        self._stats_file.close()
+        self._messages_file.close()
+        self._messages_parts_file.close()
 
-        # Save tables
-        self.write_manifests([stats_table, messages_table, messages_parts_table])
+        # Manifest files
+        self.write_manifests([self._stats_table, self._messages_table, self._messages_parts_table])
 
 
 """
