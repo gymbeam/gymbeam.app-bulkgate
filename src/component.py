@@ -242,7 +242,8 @@ class Component(ComponentBase):
 
         # Create tables definitions
         self._stats_table = self.create_out_table_definition('stats.csv', incremental=True, primary_key=['timestamp'])
-        self._messages_table = self.create_out_table_definition('messages.csv', incremental=True, primary_key=['message_id'])
+        self._messages_table = self.create_out_table_definition(
+            'messages.csv', incremental=True, primary_key=['message_id'])
         self._messages_parts_table = self.create_out_table_definition(
             'messages_parts.csv', incremental=True, primary_key=['part_id'])
 
