@@ -35,7 +35,7 @@ Duplicates Check (`duplicates_check`)
 -------
 Select 'same_text' to prevent sending duplicate messages to the same phone number. Disable the possibility to send a message with either the same or different text to the same number with 'same_number'. If 'null' no duplicates will be removed.
 
-Sending Option (`send_options`)
+Sending Channel (`send_channel`)
 -------
 Determines which channels will be used for sending the message: "viber" for viber only, "sms" for sms only, "viber_sms" for viber and sms as backup
 

@@ -23,7 +23,7 @@ Additional settings for message sending:
 
  - `Message type` - can be either `Transactional` or `Promotional` depending on the purpose of the message. Be aware that as per [documentation](https://help.bulkgate.com/docs/en/difference-promotional-transactional-sms.html#transactional-sms) **it is *strictly prohibited* to exploit transactional SMS for promotional/marketing uses. It must be used for notification purposes only - as an SMS notification.** 
  - `Sender ID` - [sender ID profile](https://help.bulkgate.com/docs/en/sender-id-profile.html)
- - `Sending Option?` - Determines which channels will be used for sending the message: "viber" for viber only, "sms" for sms only, "viber_sms" for viber and sms as backup
+ - `Sending Channel` - Determines which channels will be used for sending the message: "viber" for viber only, "sms" for sms only, "viber_sms" for viber and sms as backup
  - `Viber sender` - Sender name which will be shown in `viber` as the sender of a message (this field is mandatory if `send_options` is `viber_sms` or `viber`
  - `SMS Unicode` - If set to true, messages via sms will be sent in unicode (characters with diacritics will be sent properly) .
  - `Duplicates Check` - Select 'same_text' to prevent sending duplicate messages to the same phone number. Disable the possibility to send a message with either the same or different text to the same number with 'same_number'. If 'null' no duplicates will be removed.

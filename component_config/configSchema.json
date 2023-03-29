@@ -58,9 +58,9 @@
           "propertyOrder": 4,
           "description": "Select 'Same Text' to prevent sending duplicate messages to the same phone number. Disable the possibility to send a message with either the same or different text to the same number with 'Same Number'. If 'No Duplicate Check' no duplicates will be removed."
         },
-        "send_options": {
+        "send_channel": {
           "type": "string",
-          "title": "Sending Option",
+          "title": "Sending Channels",
           "enum": [
             "viber",
             "sms",

@@ -26,7 +26,7 @@ KEY_SETTINGS_SENDER_ID = 'sender_id'
 KEY_SETTINGS_MESSAGE_TYPE = 'message_type'
 KEY_SETTINGS_UNICODE = "sms_unicode"
 KEY_SETTINGS_DUPLICATES_CHECK = "duplicates_check"
-KEY_SETTINGS_CHANNEL = 'send_options'
+KEY_SETTINGS_CHANNEL = 'send_channel'
 KEY_SETTINGS_VIBER_SENDER = 'viber_sender'
 
 # set urls
@@ -49,7 +49,7 @@ class Settings:
     """
     sender_id: str
     message_type: str
-    send_options: str
+    send_channel: str
     viber_sender: str
     unicode: bool
     duplicates_check: str
@@ -136,7 +136,7 @@ class Component(ComponentBase):
             )
 
             # Validate settings
-            if settings_obj.send_options in ["viber", "viber_sms"] and settings_obj.viber_sender == '':
+            if settings_obj.send_channel in ["viber", "viber_sms"] and settings_obj.viber_sender == '':
                 raise UserException(
                     f"Missing mandatory field {KEY_SETTINGS_VIBER_SENDER} in settings. "
                     f"Please specify {KEY_SETTINGS_VIBER_SENDER} for Viber."
@@ -192,10 +192,10 @@ class Component(ComponentBase):
 
         # Set channels
         channels = {}
-        if settings.send_options in ["viber", "viber_sms"]:
+        if settings.send_channel in ["viber", "viber_sms"]:
             channels['viber'] = {"sender": settings.viber_sender}
 
-        if settings.send_options in ["sms", "viber_sms"]:
+        if settings.send_channel in ["sms", "viber_sms"]:
             channels['sms'] = {
                 "sender_id": "gProfile",
                 "sender_id_value": str(settings.sender_id),
@@ -284,7 +284,8 @@ class Component(ComponentBase):
 
             # Return error if the request fails
             if response.status_code != 200:
-                raise UserException(f'There was an error calling Bulkgate API due to {response.reason}')
+                raise UserException(
+                    f'There was an error calling Bulkgate API due to {response.reason}. {response.text}')
 
             self._save_response(response.json())
 
