@@ -12,7 +12,7 @@
       "required": [
         "message_type",
         "sender_id",
-        "send_options"
+        "send_channel"
       ],
       "properties": {
         "message_type": {
