@@ -10,6 +10,8 @@ import pandas as pd
 import requests
 import copy
 
+from typing import List, Dict
+
 from keboola.component.base import ComponentBase
 from keboola.component.exceptions import UserException
 
@@ -183,7 +185,7 @@ class Component(ComponentBase):
         return PROMOTIONAL_URL
 
     @staticmethod
-    def _get_body(credentials: Credentials, settings: Settings) -> dict:
+    def _get_body(credentials: Credentials, settings: Settings) -> Dict:
         """
         Returns the body for the request.
         """
@@ -211,12 +213,12 @@ class Component(ComponentBase):
         return body
 
     @staticmethod
-    def create_groups_of_dataframes_that_share_the_same_column_values(data: pd.DataFrame, columns: list) -> list[
-        pd.DataFrame]:
+    def create_groups_of_dataframes_that_share_the_same_column_values(data: pd.DataFrame, columns: List) -> List[
+        pd.DataFrame]:  # noqa
         return [sub_df for group, sub_df in data.groupby(columns, dropna=False)]
 
     @staticmethod
-    def get_texts_from_dataframe(df: pd.DataFrame) -> list[dict]:
+    def get_texts_from_dataframe(df: pd.DataFrame) -> List[Dict]:
         return [{"number": row.number, "text": row.text} for index, row in df.iterrows()]
 
     @staticmethod
@@ -233,7 +235,7 @@ class Component(ComponentBase):
             param = row[param_name]
         return param
 
-    def _send_messages(self, url: str, body: dict, data: pd.DataFrame) -> None:
+    def _send_messages(self, url: str, body: Dict, data: pd.DataFrame) -> None:
         """
         Send messages to the specified recipients
         """
@@ -328,7 +330,7 @@ class Component(ComponentBase):
                                                             fieldnames=_invalid_number_errors_fields)
         self._invalid_number_errors_writer.writeheader()
 
-    def _save_response(self, response: dict) -> None:
+    def _save_response(self, response: Dict) -> None:
         """
         Save response to the output table
         """
