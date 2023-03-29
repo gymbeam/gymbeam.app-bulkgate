@@ -21,35 +21,46 @@ Application token for Bulkgate advanced API. More information can be found [here
 
 Message type (`message_type`)
 -------
-Message type which determines which URL will be used. Can be either `Transactional` or `Promotional` depending on the purpose of the message. Be aware that as per [documentation](https://help.bulkgate.com/docs/en/difference-promotional-transactional-sms.html#transactional-sms) **it is *strictly prohibited* to exploit transactional SMS for promotional/marketing uses. It must be used for notification purposes only - as an SMS notification.**
+Message type which determines which URL will be used. Currently, can only be  `Promotional` 
 
 Sender ID (`sender_id`)
 -------
 Sender ID which will be used to send message. More information can be found [here](https://help.bulkgate.com/docs/en/sender-id-profile.html)
 
-Send to Viber? (`viber`)
+SMS Unicode (`sms_unicode`)
 -------
-Determines if message will be primarly sent to `Viber` and fallbacks to `SMS`.
+If set to true, messages via sms will be sent in unicode (characters with diacritics will be sent properly) .
+
+Duplicates Check (`duplicates_check`)
+-------
+Select 'same_text' to prevent sending duplicate messages to the same phone number. Disable the possibility to send a message with either the same or different text to the same number with 'same_number'. If 'null' no duplicates will be removed.
+
+Sending Option (`send_options`)
+-------
+Determines which channels will be used for sending the message: "viber" for viber only, "sms" for sms only, "viber_sms" for viber and sms as backup
 
 Viber sender (`viber_sender`)
 -------
-Sender name which will be shown in `viber` as the sender of a message (this field is mandatory if `Send to Viber?` is `true`
+Sender name which will be shown in `viber` as the sender of a message (this field is mandatory if `send_options` is `viber_sms` or `viber`
 
 Input
 ======
-Input must be a table with 3 columns:
+Input must be a table with 5 columns:
 
  - `number` - phone number to which message will be send - must include country code (ex: 420123123123)
  - `text` - text which will be send
  - `timestamp` - `0` for message to be sent right away or [unix timestamp](https://en.wikipedia.org/wiki/Unix_time)/[ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) for message to be sent at a specific time
+ - `button_caption` - Caption for the [Button object](https://help.bulkgate.com/docs/en/http-advanced-promotional-v2.html#button-object-parameters-table) to be sent with a viber message. Can be null for sms. button_url must also be provided
+ - `button_url` - URL for the [Button object](https://help.bulkgate.com/docs/en/http-advanced-promotional-v2.html#button-object-parameters-table) to be sent with a viber message. Can be null for sms. button_caption must also be provided
  
 Output
 ======
 
-As an output, 3 tables are returned.
+As an output, 4 tables are returned.
  - `stats` - contains information about the sent messages in total
  - `messages` - contains information about each sent message
  - `messages_parts` - contains information about message parts for each message
+ - `invalid_number_errors` - contains information about numbers that were not able to have messages sent to them because they were invalid
 
 Development
 -----------

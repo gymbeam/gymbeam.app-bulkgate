@@ -12,12 +12,11 @@
       "required": [
         "message_type",
         "sender_id",
-        "viber"
+        "send_options"
       ],
       "properties": {
         "message_type": {
           "enum": [
-            "Transactional",
             "Promotional"
           ],
           "type": "string",
@@ -31,17 +30,59 @@
           "description": "Sender ID to use for the message.",
           "propertyOrder": 2
         },
-        "viber": {
+        "sms_unicode": {
           "type": "boolean",
-          "title": "Send to Viber?",
-          "description": "Determines if message is primary sent to Viber or not.",
+          "format": "checkbox",
+          "title": "SMS Unicode",
+          "description": "If set, messages via sms will be sent in unicode (characters with diacritics will be sent properly) ",
+          "default": false,
           "propertyOrder": 3
+        },
+        "duplicates_check": {
+          "type": "string",
+          "title": "Duplicates Check",
+          "enum": [
+            "null",
+            "same_text",
+            "same_number"
+          ],
+          "options": {
+            "enum_titles": [
+              "No Duplicate Check",
+              "Same Text",
+              "Same Number"
+            ]
+          },
+          "default": "null",
+          "required": true,
+          "propertyOrder": 4,
+          "description": "Select 'Same Text' to prevent sending duplicate messages to the same phone number. Disable the possibility to send a message with either the same or different text to the same number with 'Same Number'. If 'No Duplicate Check' no duplicates will be removed."
+        },
+        "send_options": {
+          "type": "string",
+          "title": "Sending Option",
+          "enum": [
+            "viber",
+            "sms",
+            "viber_sms"
+          ],
+          "options": {
+            "enum_titles": [
+              "Viber only",
+              "SMS only",
+              "Viber + SMS as a backup"
+            ]
+          },
+          "default": "viber",
+          "required": true,
+          "description": "Determines what channel you wish to use to send the messages",
+          "propertyOrder": 5
         },
         "viber_sender": {
           "type": "string",
           "title": "Viber sender",
           "description": "Viber sender name which will be shown as a sender.",
-          "propertyOrder": 4
+          "propertyOrder": 6
         }
       },
       "propertyOrder": 2
