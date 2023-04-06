@@ -349,6 +349,8 @@ class Component(ComponentBase):
             message['timestamp'] = current_time
             if message.get("status") == "invalid_number":
                 self._invalid_number_errors_writer.writerow(message)
+            elif message.get("status") == "invalid_sender":
+                raise UserException("Invalid Sender")
             else:
                 # Load messages parts data
                 for part in message['part_id']:
