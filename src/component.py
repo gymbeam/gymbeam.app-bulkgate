@@ -85,13 +85,14 @@ class Component(ComponentBase):
         _url = self._get_url()
         _body = self._get_body(_credentials_object, _settings_object)
 
-        self._create_tables_definitions()
+        if not _data_in.empty:
+            self._create_tables_definitions()
 
-        # Send messages
-        self._send_messages(_url, _body, _data_in)
+            # Send messages
+            self._send_messages(_url, _body, _data_in)
 
-        # Close files and manifest data
-        self._close_and_manifest_files()
+            # Close files and manifest data
+            self._close_and_manifest_files()
 
     def _parse_credentials_parameters(self):
         """
@@ -173,7 +174,7 @@ class Component(ComponentBase):
 
         # Return error if there is no data
         if df.empty:
-            raise UserException(f'Input table {table.name} is empty!')
+            logging.info(f'Input table {table.name} is empty!')
 
         return df
 
