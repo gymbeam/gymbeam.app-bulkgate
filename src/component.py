@@ -354,13 +354,13 @@ class Component(ComponentBase):
                 raise UserException("Invalid Sender")
             else:
                 # Load messages parts data
-                for part in message['part_id']:
-                    self._messages_parts_writer.writerow({
-                        'part_id': part,
-                        'message_id': message['message_id']
-                    })
+                if message.get('part_id'):
+                    for part in message['part_id']:
+                        self._messages_parts_writer.writerow({
+                            'part_id': part,
+                            'message_id': message['message_id']
+                        })
 
-                # Load messages data
                 message.pop('part_id', None)
                 self._messages_writer.writerow(message)
 
