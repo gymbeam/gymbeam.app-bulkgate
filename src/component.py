@@ -301,8 +301,8 @@ class Component(ComponentBase):
             'messages.csv', incremental=True, primary_key=['message_id'])
         self._messages_parts_table = self.create_out_table_definition(
             'messages_parts.csv', incremental=True, primary_key=['part_id'])
-        self._invalid_number_errors_table = self.create_out_table_definition(
-            'invalid_number_errors.csv', incremental=True, primary_key=['number', 'timestamp'])
+        self._errors_table = self.create_out_table_definition(
+            'errors.csv', incremental=True, primary_key=['number', 'timestamp'])
 
         # Open stats file, set headers, writer and write headers
         self._stats_file = open(self._stats_table.full_path, 'wt', encoding='UTF-8', newline='')
@@ -325,12 +325,12 @@ class Component(ComponentBase):
         self._messages_parts_writer = csv.DictWriter(self._messages_parts_file, fieldnames=messages_parts_fields)
         self._messages_parts_writer.writeheader()
 
-        self._invalid_number_errors_file = open(self._invalid_number_errors_table.full_path, 'wt', encoding='UTF-8',
+        self._errors_file = open(self._errors_table.full_path, 'wt', encoding='UTF-8',
                                                 newline='')
-        _invalid_number_errors_fields = ["number", "status", "code", "error", "detail", "channel", "timestamp"]
-        self._invalid_number_errors_writer = csv.DictWriter(self._invalid_number_errors_file,
-                                                            fieldnames=_invalid_number_errors_fields)
-        self._invalid_number_errors_writer.writeheader()
+        _errors_fields = ["number", "status", "code", "error", "detail", "channel", "timestamp"]
+        self._errors_writer = csv.DictWriter(self._errors_file,
+                                                            fieldnames=_errors_fields)
+        self._errors_writer.writeheader()
 
     def _save_response(self, response: Dict) -> None:
         """
@@ -348,8 +348,8 @@ class Component(ComponentBase):
         # Parse messages data and load
         for message in response['data']['response']:
             message['timestamp'] = current_time
-            if message.get("status") == "invalid_number":
-                self._invalid_number_errors_writer.writerow(message)
+            if message.get("status") in ["error", "blacklisted", "invalid_number", "duplicity_message"]:
+                self._errors_writer.writerow(message)
             elif message.get("status") == "invalid_sender":
                 raise UserException("Invalid Sender")
             else:
@@ -372,11 +372,11 @@ class Component(ComponentBase):
         self._stats_file.close()
         self._messages_file.close()
         self._messages_parts_file.close()
-        self._invalid_number_errors_file.close()
+        self._errors_file.close()
 
         # Manifest files
         self.write_manifests(
-            [self._stats_table, self._messages_table, self._messages_parts_table, self._invalid_number_errors_table])
+            [self._stats_table, self._messages_table, self._messages_parts_table, self._errors_table])
 
 
 """
