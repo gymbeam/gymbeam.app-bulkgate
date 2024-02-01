@@ -325,11 +325,9 @@ class Component(ComponentBase):
         self._messages_parts_writer = csv.DictWriter(self._messages_parts_file, fieldnames=messages_parts_fields)
         self._messages_parts_writer.writeheader()
 
-        self._errors_file = open(self._errors_table.full_path, 'wt', encoding='UTF-8',
-                                                newline='')
+        self._errors_file = open(self._errors_table.full_path, 'wt', encoding='UTF-8', newline='')
         _errors_fields = ["number", "status", "code", "error", "detail", "channel", "timestamp"]
-        self._errors_writer = csv.DictWriter(self._errors_file,
-                                                            fieldnames=_errors_fields)
+        self._errors_writer = csv.DictWriter(self._errors_file, fieldnames=_errors_fields)
         self._errors_writer.writeheader()
 
     def _save_response(self, response: Dict) -> None:
